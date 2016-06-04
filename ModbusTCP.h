@@ -110,9 +110,15 @@
 #ifdef MB_CC3000
 #include <Adafruit_CC3000.h>
 #include <SPI.h>
-#define ADAFRUIT_CC3000_IRQ   3
-#define ADAFRUIT_CC3000_VBAT  5
-#define ADAFRUIT_CC3000_CS    10
+  #if defined (_86DUINO)
+  #define ADAFRUIT_CC3000_IRQ   42
+  #define ADAFRUIT_CC3000_VBAT  44
+  #define ADAFRUIT_CC3000_CS    43
+  #elif defined (__AVR__) || defined (ARDUINO)
+  #define ADAFRUIT_CC3000_IRQ   3
+  #define ADAFRUIT_CC3000_VBAT  5
+  #define ADAFRUIT_CC3000_CS    10
+  #endif
 #endif
 
 //

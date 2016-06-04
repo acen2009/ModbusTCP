@@ -1,0 +1,5 @@
+2016/06/04
+=============
+
+1. Fixed: Line 36, add mb_server.begin() to initialize Ethernet.
+2. A new implementation instead of word(*ptr++, *ptr++).

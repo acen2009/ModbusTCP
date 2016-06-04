@@ -33,6 +33,7 @@ void ModbusTCP::begin(uint8_t mac[6]){
   Serial.print(":");
   Serial.print(MB_PORT);
   Serial.println(" ...");
+  mb_server.begin(); // add this function to begin
 }
 #endif
 #ifdef MB_CC3000
@@ -58,6 +59,7 @@ void ModbusTCP::run(void){
   int16_t i, iStart, iQty;
   int16_t iTXLen = 0;       // response packet length
   uint8_t *ptr, iFC = MB_FC_NONE, iEC = MB_EC_NONE;
+  int16_t tmp;
   //  
   // Initialize and check for a request from a MODBUS master
   //
@@ -104,8 +106,10 @@ void ModbusTCP::run(void){
     // Unpack the start and length
     //
     ptr = mb_adu + MB_TCP_DATA;
-    iStart = word(*ptr++, *ptr++) - 40000;
-    iQty = 2*word(*ptr++, *ptr);
+	tmp = *ptr++;
+    iStart = word(tmp, *ptr++) - 40000;
+	tmp = *ptr++;
+    iQty = 2*word(tmp, *ptr);
     //
     // check for valid register addresses     
     //
@@ -132,8 +136,9 @@ void ModbusTCP::run(void){
     //
     // 06 (0x06) Write register 
     //
-    ptr = mb_adu + MB_TCP_DATA;   
-    iStart = word(*ptr++, *ptr++) - 40000;
+    ptr = mb_adu + MB_TCP_DATA;
+    tmp = *ptr++;	
+    iStart = word(tmp, *ptr++) - 40000;
     //
     // check for valid register addresses     
     //   
@@ -143,7 +148,8 @@ void ModbusTCP::run(void){
     }      
     // Unpack and store data
     //
-    mb_reg[iStart] = word(*ptr++, *ptr);
+	tmp = *ptr++;
+    mb_reg[iStart] = word(tmp, *ptr);
     //
     // Build a response 
     //
@@ -163,9 +169,11 @@ void ModbusTCP::run(void){
     //
     // Unpack the start and length
     //
-    ptr = mb_adu + MB_TCP_DATA;   
-    iStart = word(*ptr++, *ptr++) - 40000;
-    iQty = 2*word(*ptr++, *ptr);      
+    ptr = mb_adu + MB_TCP_DATA;
+	tmp = *ptr++;	
+    iStart = word(tmp, *ptr++) - 40000;
+	tmp = *ptr++;
+    iQty = 2*word(tmp, *ptr);      
     //
     // check for valid register addresses     
     //   
@@ -179,7 +187,8 @@ void ModbusTCP::run(void){
     ptr = mb_adu + MB_TCP_DATA+5;
     // todo: check for valid length
     for (i = 0 ; i < iQty/2 ; i++) {
-      mb_reg[iStart + i] = word(*ptr++, *ptr++);
+	  tmp = *ptr++;
+      mb_reg[iStart + i] = word(tmp, *ptr++);
     }
     //
     // Build a response 
